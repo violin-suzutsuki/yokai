@@ -1,0 +1,27 @@
+CREATE TABLE mangas_ratings(
+    _id INTEGER NOT NULL PRIMARY KEY,
+    manga_id INTEGER NOT NULL,
+    rating REAL NOT NULL CHECK (rating >= 0 AND rating <= 10),
+    FOREIGN KEY(manga_id) REFERENCES mangas (_id)
+    ON DELETE CASCADE,
+    UNIQUE (manga_id) ON CONFLICT REPLACE
+);
+
+findByMangaId:
+SELECT *
+FROM mangas_ratings
+WHERE manga_id = :mangaId;
+
+insert:
+INSERT INTO mangas_ratings(manga_id, rating)
+VALUES (:mangaId, :rating)
+ON CONFLICT (manga_id)
+DO UPDATE SET rating = :rating;
+
+delete:
+DELETE FROM mangas_ratings
+WHERE manga_id = :mangaId;
+
+deleteBulk:
+DELETE FROM mangas_ratings
+WHERE manga_id IN :mangaIds; 

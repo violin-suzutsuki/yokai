@@ -31,6 +31,7 @@ import coil3.request.error
 import coil3.request.placeholder
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.database.models.seriesType
 import eu.kanade.tachiyomi.databinding.ChapterHeaderItemBinding
@@ -50,6 +51,9 @@ import yokai.i18n.MR
 import yokai.util.coil.loadManga
 import yokai.util.lang.getString
 import android.R as AR
+import android.app.AlertDialog
+import android.widget.RatingBar
+import com.google.android.material.textfield.TextInputEditText
 
 @SuppressLint("ClickableViewAccessibility")
 class MangaHeaderHolder(
@@ -301,6 +305,7 @@ class MangaHeaderHolder(
     fun bind(item: MangaHeaderItem) {
         val presenter = adapter.delegate.mangaPresenter()
         val manga = presenter.manga
+        val libraryManga = presenter.manga
 
         if (binding == null) {
             if (chapterBinding != null) {
@@ -366,6 +371,53 @@ class MangaHeaderHolder(
             checked(!item.isLocked && manga.favorite)
             adapter.delegate.setFavButtonPopup(this)
         }
+
+        val rating: Double = presenter.rating!!
+
+        binding.rateButton?.apply {
+            isVisible = manga.favorite
+            icon = ContextCompat.getDrawable(
+                itemView.context,
+                when {
+                    rating > 0 -> R.drawable.ic_star_24dp
+                    else -> R.drawable.ic_star_outline_24dp
+                },
+            )
+            text = when {
+                rating > 0 -> String.format("%.1f", rating)
+                else -> MR.strings.rate.getString(itemView.context)
+            }
+            checked(rating > 0)
+            setOnClickListener {
+                val dialog = MaterialAlertDialogBuilder(itemView.context)
+                    .setTitle(MR.strings.rating.getString(itemView.context))
+                    .setView(R.layout.dialog_rating)
+                    .setPositiveButton(MR.strings.action_ok.getString(itemView.context)) { dialog, _ ->
+                        val ratingInput = (dialog as androidx.appcompat.app.AlertDialog).findViewById<TextInputEditText>(R.id.rating_input)
+                        val ratingText = ratingInput?.text?.toString()
+                        if (!ratingText.isNullOrBlank()) {
+                            val rating = ratingText.toDoubleOrNull()
+                            if (rating != null && rating in 0.0..10.0) {
+                                adapter.delegate.mangaPresenter().setMangaRating(rating)
+                                updateRating(rating)
+                            }
+                        }
+                    }
+                    .setNegativeButton(MR.strings.action_cancel.getString(itemView.context), null)
+                    .create()
+
+                dialog.setOnShowListener {
+                    val ratingInput = (dialog as androidx.appcompat.app.AlertDialog).findViewById<TextInputEditText>(R.id.rating_input)
+                    ratingInput?.setText(when {
+                        rating > 0 -> String.format("%.1f", rating)
+                        else -> ""
+                    })
+                }
+
+                dialog.show()
+            }
+        }
+
         binding.trueBackdrop.setBackgroundColor(
             adapter.delegate.coverColor()
                 ?: itemView.context.getResourceColor(R.attr.background),
@@ -717,6 +769,24 @@ class MangaHeaderHolder(
             }
         }
         binding.startReadingButton.isVisible = showReadingButton
+    }
+
+    fun updateRating(rating: Double) {
+        binding ?: return
+        binding.rateButton?.apply {
+            icon = ContextCompat.getDrawable(
+                itemView.context,
+                when {
+                    rating > 0 -> R.drawable.ic_star_24dp
+                    else -> R.drawable.ic_star_outline_24dp
+                },
+            )
+            text = when {
+                rating > 0 -> String.format("%.1f", rating)
+                else -> MR.strings.rate.getString(itemView.context)
+            }
+            checked(rating > 0)
+        }
     }
 
     override fun onLongClick(view: View?): Boolean {

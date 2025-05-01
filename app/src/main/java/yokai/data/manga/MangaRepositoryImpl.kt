@@ -39,6 +39,9 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
     override fun getLibraryMangaAsFlow(): Flow<List<LibraryManga>> =
         handler.subscribeToList { library_viewQueries.findAll(LibraryManga::mapper) }
 
+    override suspend fun getLibraryMangaById(mangaId: Long): LibraryManga? =
+        handler.awaitOneOrNull { library_viewQueries.findByMangaId(mangaId, LibraryManga::mapper) }
+
     override suspend fun getDuplicateFavorite(title: String, source: Long): Manga? =
         handler.awaitFirstOrNull { mangasQueries.findDuplicateFavorite(title.lowercase(), source, Manga::mapper) }
 
@@ -131,5 +134,10 @@ class MangaRepositoryImpl(private val handler: DatabaseHandler) : MangaRepositor
             mangaCategories.forEach {
                 mangas_categoriesQueries.insert(it.manga_id, it.category_id.toLong())
             }
+        }
+
+    override suspend fun setRating(mangaId: Long, rating: Double) =
+        handler.await(inTransaction = true) {
+            mangas_ratingsQueries.insert(mangaId, rating)
         }
 }

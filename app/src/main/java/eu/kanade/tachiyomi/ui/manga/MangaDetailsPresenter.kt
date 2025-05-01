@@ -102,8 +102,11 @@ import yokai.domain.storage.StorageManager
 import yokai.domain.track.interactor.DeleteTrack
 import yokai.domain.track.interactor.GetTrack
 import yokai.domain.track.interactor.InsertTrack
+import yokai.data.DatabaseHandler
 import yokai.i18n.MR
 import yokai.util.lang.getString
+import yokai.domain.manga.MangaRepository
+import eu.kanade.tachiyomi.data.database.models.LibraryManga
 
 class MangaDetailsPresenter(
     val mangaId: Long,
@@ -112,7 +115,7 @@ class MangaDetailsPresenter(
     val coverCache: CoverCache = Injekt.get(),
     private val downloadManager: DownloadManager = Injekt.get(),
     private val chapterFilter: ChapterFilter = Injekt.get(),
-    private val storageManager: StorageManager = Injekt.get(),
+    private val storageManager: StorageManager = Injekt.get()
 ) : BaseCoroutinePresenter<MangaDetailsController>(),
     DownloadQueue.Listener {
     private val getAvailableScanlators: GetAvailableScanlators by injectLazy()
@@ -125,6 +128,7 @@ class MangaDetailsPresenter(
     private val getTrack: GetTrack by injectLazy()
     private val insertTrack: InsertTrack by injectLazy()
     private val getHistory: GetHistory by injectLazy()
+    private val mangaRepository: MangaRepository by injectLazy()
 
     private val networkPreferences: NetworkPreferences by injectLazy()
 
@@ -132,6 +136,7 @@ class MangaDetailsPresenter(
 //    val currentManga get() = currentMangaInternal.asStateFlow()
 
     lateinit var manga: Manga
+    lateinit var libraryManga: LibraryManga
     fun isMangaLateInitInitialized() = ::manga.isInitialized
 
     private val customMangaManager: CustomMangaManager by injectLazy()
@@ -160,6 +165,19 @@ class MangaDetailsPresenter(
 
     var allHistory: List<History> = emptyList()
         private set
+
+    val rating: Double
+        get() = if (manga.favorite) getMangaRating() else 0.0
+
+    private fun getMangaRating(): Double {
+        return if (::libraryManga.isInitialized) libraryManga.rating else 0.0
+    }
+
+    fun setMangaRating(rating: Double) {
+        presenterScope.launchIO {
+            mangaRepository.setRating(mangaId, rating)
+        }
+    }
 
     val headerItem: MangaHeaderItem by lazy { MangaHeaderItem(mangaId, view?.fromCatalogue == true)}
     var tabletChapterHeaderItem: MangaHeaderItem? = null
@@ -256,8 +274,11 @@ class MangaDetailsPresenter(
     }
 
     fun setCurrentManga(manga: Manga?) {
-//        currentMangaInternal.update { manga }
         this.manga = manga!!
+        presenterScope.launchIO {
+            val libraryManga = mangaRepository.getLibraryMangaById(manga.id!!)
+            this@MangaDetailsPresenter.libraryManga = libraryManga ?: LibraryManga(manga)
+        }
     }
 
     // TODO: Use flow to "sync" data instead

@@ -1,0 +1,11 @@
+CREATE TABLE mangas_ratings(
+    _id INTEGER NOT NULL PRIMARY KEY,
+    manga_id INTEGER NOT NULL,
+    rating REAL NOT NULL CHECK (rating >= 0 AND rating <= 10),
+    FOREIGN KEY(manga_id) REFERENCES mangas (_id)
+    ON DELETE CASCADE,
+    UNIQUE (manga_id) ON CONFLICT REPLACE
+);
+
+-- Create an index for faster lookups
+CREATE INDEX mangas_ratings_manga_id_index ON mangas_ratings(manga_id); 

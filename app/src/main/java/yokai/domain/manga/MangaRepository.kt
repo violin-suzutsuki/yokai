@@ -17,9 +17,11 @@ interface MangaRepository {
     fun getMangaListAsFlow(): Flow<List<Manga>>
     suspend fun getLibraryManga(): List<LibraryManga>
     fun getLibraryMangaAsFlow(): Flow<List<LibraryManga>>
+    suspend fun getLibraryMangaById(mangaId: Long): LibraryManga?
     suspend fun update(update: MangaUpdate): Boolean
     suspend fun updateAll(updates: List<MangaUpdate>): Boolean
     suspend fun insert(manga: Manga): Long?
     suspend fun setCategories(mangaId: Long, categoryIds: List<Long>)
     suspend fun setMultipleMangaCategories(mangaIds: List<Long>, mangaCategories: List<MangaCategory>)
+    suspend fun setRating(mangaId: Long, rating: Double)
 }

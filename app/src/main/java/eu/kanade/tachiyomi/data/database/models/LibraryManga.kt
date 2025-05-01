@@ -13,6 +13,7 @@ data class LibraryManga(
     var latestUpdate: Long = 0,
     var lastRead: Long = 0,
     var lastFetch: Long = 0,
+    var rating: Double = 0.0,
 ) {
     val hasRead
         get() = read > 0
@@ -48,6 +49,7 @@ data class LibraryManga(
             latestUpdate: Long,
             lastRead: Long,
             lastFetch: Long,
+            rating: Double,
         ): LibraryManga = LibraryManga(
             manga = Manga.mapper(
                 id = id,
@@ -79,6 +81,7 @@ data class LibraryManga(
             latestUpdate = latestUpdate,
             lastRead = lastRead,
             lastFetch = lastFetch,
+            rating = rating,
         )
     }
 }

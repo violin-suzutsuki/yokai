@@ -186,6 +186,13 @@
                 app:icon="@drawable/ic_heart_outline_24dp" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/rate_button"
+                style="@style/Widget.Tachiyomi.Button.OutlinedButton.Icon"
+                android:layout_marginStart="6dp"
+                android:text="@string/rate"
+                app:icon="@drawable/ic_star_outline_24dp" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/track_button"
                 style="@style/Widget.Tachiyomi.Button.OutlinedButton.Icon"
                 android:layout_marginStart="6dp"
