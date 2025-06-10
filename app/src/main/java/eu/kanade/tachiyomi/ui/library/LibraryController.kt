@@ -78,6 +78,7 @@ import eu.kanade.tachiyomi.ui.category.ManageCategoryDialog
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_AUTHOR
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_DEFAULT
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_LANGUAGE
+import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_RATING
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_SOURCE
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_STATUS
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_TAG
@@ -537,6 +538,7 @@ open class LibraryController(
             groupItems.add(BY_TRACK_STATUS)
         }
         groupItems.add(BY_LANGUAGE)
+        groupItems.add(BY_RATING)
         if (presenter.isCategoryMoreThanOne()) {
             groupItems.add(UNGROUPED)
         }

@@ -26,6 +26,7 @@ import eu.kanade.tachiyomi.ui.base.presenter.BaseCoroutinePresenter
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_AUTHOR
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_DEFAULT
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_LANGUAGE
+import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_RATING
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_SOURCE
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_TAG
 import eu.kanade.tachiyomi.ui.library.LibraryGroup.BY_TRACK_STATUS
@@ -260,10 +261,12 @@ class LibraryPresenter(
                     setDownloadCount(items)
                     setUnreadBadge(items)
                     setSourceLanguage(items)
+                    setRating(items)
                 }
                 setDownloadCount(hiddenItems)
                 setUnreadBadge(hiddenItems)
                 setSourceLanguage(hiddenItems)
+                setRating(hiddenItems)
 
                 currentLibrary = library
                 hiddenLibraryItems = hiddenItems
@@ -642,6 +645,14 @@ class LibraryPresenter(
         }
     }
 
+    private fun setRating(itemList: List<LibraryItem>) {
+        val showRatingBadges = preferences.ratingBadge().get()
+        for (item in itemList) {
+            if (item !is LibraryMangaItem) continue
+            item.rating = if (showRatingBadges) item.manga.rating else null
+        }
+    }
+
     private fun getLanguage(manga: Manga): String? {
         return if (manga.isLocal()) {
             LocalSource.getMangaLang(manga)
@@ -689,6 +700,9 @@ class LibraryPresenter(
                             i1.manga.lastFetch.compareTo(i2.manga.lastFetch)
                         }
                         LibrarySort.DateAdded -> i2.manga.manga.date_added.compareTo(i1.manga.manga.date_added)
+                        LibrarySort.Rating -> {
+                            i2.manga.rating.compareTo(i1.manga.rating)
+                        }
                         LibrarySort.DragAndDrop -> {
                             if (category.isDynamic) {
                                 val category1 = categoryOrderMap[i1.manga.category] ?: 0
@@ -1121,6 +1135,16 @@ class LibraryPresenter(
                         ),
                     )
                 }
+                BY_RATING -> {
+                    val score = manga.rating.toInt()
+                    listOf(
+                        LibraryMangaItem(
+                            manga,
+                            makeOrGetHeader(score.toString()),
+                            viewContext,
+                        ),
+                    )
+                }
                 // BY_STATUS
                 else -> listOf(LibraryMangaItem(manga, makeOrGetHeader(context.mapStatus(manga.manga.status)), viewContext))
             }
@@ -1248,6 +1272,11 @@ class LibraryPresenter(
     /** Requests the library to have language badges changed. */
     fun requestLanguageBadgesUpdate() {
         requestBadgeUpdate { setSourceLanguage(it) }
+    }
+
+    /** Requests the library to have rating badges changed. */
+    fun requestRatingBadgesUpdate() {
+        requestBadgeUpdate { setRating(it) }
     }
 
     /** Requests the library to be sorted. */

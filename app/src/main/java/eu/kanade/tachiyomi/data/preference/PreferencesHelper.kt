@@ -227,6 +227,8 @@ class PreferencesHelper(val context: Context, val preferenceStore: PreferenceSto
 
     fun languageBadge() = preferenceStore.getBoolean(Keys.languageBadge, false)
 
+    fun ratingBadge() = preferenceStore.getBoolean(Keys.ratingBadge, false)
+
     fun filterDownloaded() = preferenceStore.getInt(Keys.filterDownloaded, 0)
 
     fun filterUnread() = preferenceStore.getInt(Keys.filterUnread, 0)

@@ -30,6 +30,7 @@ class LibraryMangaItem(
     var downloadCount = -1
     var unreadType = 2
     var sourceLanguage: String? = null
+    var rating: Double? = null
 
     override fun getLayoutRes(): Int {
         return if (libraryLayout == LAYOUT_LIST) {

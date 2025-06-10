@@ -101,6 +101,23 @@
         app:layout_constraintVertical_bias="0.0"
         tools:text="Manga artist" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/rating_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/badge_background"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"
+        tools:text="8" />
+
     <include layout="@layout/unread_download_badge"
         android:id="@+id/unread_download_badge"
         android:layout_width="wrap_content"

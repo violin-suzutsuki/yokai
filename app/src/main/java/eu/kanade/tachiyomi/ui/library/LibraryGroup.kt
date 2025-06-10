@@ -15,6 +15,7 @@ object LibraryGroup {
     const val BY_TRACK_STATUS = 4
     const val BY_AUTHOR = 6
     const val BY_LANGUAGE = 7
+    const val BY_RATING = 8
     const val UNGROUPED = 5
 
     fun groupTypeStringRes(type: Int, hasCategories: Boolean = true): StringResource {
@@ -25,6 +26,7 @@ object LibraryGroup {
             BY_TRACK_STATUS -> MR.strings.tracking_status
             BY_AUTHOR -> MR.strings.author
             BY_LANGUAGE -> MR.strings.language
+            BY_RATING -> MR.strings.rating
             UNGROUPED -> MR.strings.ungrouped
             else -> if (hasCategories) MR.strings.categories else MR.strings.ungrouped
         }
@@ -38,6 +40,7 @@ object LibraryGroup {
             BY_SOURCE -> R.drawable.ic_browse_24dp
             BY_AUTHOR -> R.drawable.ic_author_24dp
             BY_LANGUAGE -> R.drawable.ic_translate_24dp
+            BY_RATING -> R.drawable.ic_star_24dp
             UNGROUPED -> R.drawable.ic_ungroup_24dp
             else -> R.drawable.ic_label_outline_24dp
         }

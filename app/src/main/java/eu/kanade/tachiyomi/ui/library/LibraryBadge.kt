@@ -158,7 +158,7 @@ class LibraryBadge @JvmOverloads constructor(context: Context, attrs: AttributeS
         }
         binding.downloadText.updatePaddingRelative(
             start = if (binding.downloadAngle.isVisible) {
-                2.dpToPx
+                8.dpToPx
             } else {
                 5.dpToPx
             },

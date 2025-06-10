@@ -22,8 +22,9 @@ enum class LibrarySort(
     TotalChapters(4, MR.strings.total_chapters, R.drawable.ic_sort_by_numeric_24dp),
     DateAdded(5, MR.strings.date_added, R.drawable.ic_heart_outline_24dp),
     DateFetched(6, MR.strings.date_fetched, R.drawable.ic_calendar_text_outline_24dp),
+    Rating(7, MR.strings.rating, R.drawable.ic_star_24dp),
     DragAndDrop(
-        7,
+        8,
         MR.strings.drag_and_drop,
         R.drawable.ic_swap_vert_24dp,
         7,
@@ -31,7 +32,7 @@ enum class LibrarySort(
         R.drawable.ic_label_outline_24dp,
     ),
     Random(
-        8,
+        9,
         MR.strings.random,
         R.drawable.ic_shuffle_24dp,
     ),
@@ -51,6 +52,7 @@ enum class LibrarySort(
             LatestChapter -> "LATEST_CHAPTER"
             DateFetched -> "CHAPTER_FETCH_DATE"
             DateAdded -> "DATE_ADDED"
+            Rating -> "RATING"
             Random -> "RANDOM"
             else -> "ALPHABETICAL"
         }
@@ -63,7 +65,7 @@ enum class LibrarySort(
     fun iconRes(isDynamic: Boolean) = if (isDynamic) dynamicIconRes else iconRes
 
     val hasInvertedSort: Boolean
-        get() = this in listOf(LastRead, DateAdded, LatestChapter, DateFetched)
+        get() = this in listOf(LastRead, DateAdded, LatestChapter, DateFetched, Rating)
 
     val isDirectional: Boolean
         get() = this !in listOf(DragAndDrop, Random)
@@ -90,6 +92,7 @@ enum class LibrarySort(
                     "LATEST_CHAPTER" -> LatestChapter
                     "CHAPTER_FETCH_DATE" -> DateFetched
                     "DATE_ADDED" -> DateAdded
+                    "RATING" -> Rating
                     "RANDOM" -> Random
                     else -> Title
                 }

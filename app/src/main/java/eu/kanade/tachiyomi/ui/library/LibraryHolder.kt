@@ -4,6 +4,7 @@ import android.view.View
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textview.MaterialTextView
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.base.holder.BaseFlexibleViewHolder
 import eu.kanade.tachiyomi.util.isLocal
@@ -56,6 +57,16 @@ abstract class LibraryHolder(
             item.sourceLanguage,
             this is LibraryGridHolder,
         )
+
+        // Update rating badge
+        itemView.findViewById<MaterialTextView>(R.id.rating_badge)?.let { ratingBadge ->
+            ratingBadge.isVisible = item.rating != null
+            if (item.rating != null) {
+                ratingBadge.text = String.format("%.1f", item.rating)
+                ratingBadge.setTextColor(itemView.context.getResourceColor(R.attr.colorOnPrimary))
+                ratingBadge.setBackgroundColor(itemView.context.getResourceColor(R.attr.colorPrimary))
+            }
+        }
     }
 
     fun setReadingButton(item: LibraryMangaItem) {

@@ -274,6 +274,14 @@ class LibraryCategoryAdapter(val controller: LibraryController?) :
                         LibrarySort.Random -> {
                             context.getString(MR.strings.random)
                         }
+                        LibrarySort.Rating -> {
+                            val rating = item.manga.rating
+                            if (rating > 0) {
+                                String.format("%.1f", rating)
+                            } else {
+                                "N/A"
+                            }
+                        }
                     }
                 if (!isSingleCategory) {
                     vibrateOnCategoryChange(item.header?.category?.name.orEmpty())
